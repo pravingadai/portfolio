@@ -130,7 +130,7 @@
 
   /* Mobile Menu */
   .mobile-menu {
-    @apply fixed inset-0 z-50 bg-background/95 backdrop-blur-lg;
+    @apply fixed inset-0 z-50 bg-background/90 backdrop-blur-xl;
     clip-path: circle(0% at calc(100% - 2rem) 2rem);
     transition: clip-path 0.5s cubic-bezier(0.77, 0, 0.175, 1);
     pointer-events: none;
@@ -139,6 +139,18 @@
   .mobile-menu.open {
     clip-path: circle(150% at calc(100% - 2rem) 2rem);
     pointer-events: all;
+  }
+  
+  /* Mobile menu social icons */
+  .mobile-social-icon {
+    @apply text-foreground hover:text-primary transition-all;
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  
+  .mobile-social-icon:hover {
+    transform: scale(1.2);
+    opacity: 1;
   }
 
   /* Fancy card effects */
