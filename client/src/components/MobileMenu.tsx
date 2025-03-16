@@ -1,4 +1,8 @@
 import { useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { X } from "lucide-react";
+import { NAV_LINKS } from "@/lib/constants";
+import { RESUME_PDF_URL } from "@/lib/constants";
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -19,90 +23,105 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
     };
   }, [isOpen]);
 
-  if (!isOpen) return null;
+  const menuVariants = {
+    closed: {
+      opacity: 0,
+      clipPath: "circle(0% at calc(100% - 2rem) 2rem)",
+      transition: {
+        type: "spring",
+        stiffness: 400,
+        damping: 40,
+        when: "afterChildren"
+      }
+    },
+    open: {
+      opacity: 1,
+      clipPath: "circle(150% at calc(100% - 2rem) 2rem)",
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        when: "beforeChildren",
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    closed: { opacity: 0, y: 20 },
+    open: { opacity: 1, y: 0 }
+  };
 
   return (
-    <div className="fixed inset-0 z-40 bg-background/95 flex flex-col justify-center items-center">
-      <button 
-        className="absolute top-6 right-6 p-2"
-        onClick={onClose}
-        aria-label="Close mobile menu"
-      >
-        <svg 
-          xmlns="http://www.w3.org/2000/svg" 
-          width="24" 
-          height="24" 
-          viewBox="0 0 24 24" 
-          fill="none" 
-          stroke="currentColor" 
-          strokeWidth="2" 
-          strokeLinecap="round" 
-          strokeLinejoin="round"
-          className="text-2xl"
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div 
+          className="fixed inset-0 z-50 bg-background/95 dark:bg-gray-900/95 backdrop-blur-lg flex flex-col justify-center items-center"
+          initial="closed"
+          animate="open"
+          exit="closed"
+          variants={menuVariants}
         >
-          <path d="M18 6 6 18" />
-          <path d="m6 6 12 12" />
-        </svg>
-      </button>
-      
-      <nav>
-        <ul className="flex flex-col space-y-6 text-center">
-          <li>
-            <a 
-              href="#about" 
-              className="text-xl font-medium hover:text-primary transition-colors"
-              onClick={onClose}
-            >
-              About
+          <motion.button 
+            className="absolute top-6 right-6 p-2 text-foreground hover:text-primary transition-colors focus-ring rounded-full"
+            onClick={onClose}
+            aria-label="Close mobile menu"
+            whileHover={{ rotate: 90 }}
+            transition={{ duration: 0.2 }}
+          >
+            <X size={24} />
+          </motion.button>
+          
+          <nav className="w-full max-w-sm">
+            <ul className="flex flex-col space-y-6 text-center px-8">
+              {NAV_LINKS.map((link, index) => (
+                <motion.li key={link.href} variants={itemVariants}>
+                  <a 
+                    href={link.href} 
+                    className="text-3xl font-bold text-foreground hover:text-primary transition-colors block py-2"
+                    onClick={onClose}
+                  >
+                    <span className="text-primary mr-2 opacity-50">{(index + 1).toString().padStart(2, '0')}.</span>
+                    {link.label}
+                  </a>
+                </motion.li>
+              ))}
+              
+              <motion.li variants={itemVariants}>
+                <a
+                  href={RESUME_PDF_URL}
+                  className="mt-8 block w-full py-3 px-6 bg-primary hover:bg-primary/90 text-white rounded-lg font-medium transform hover:scale-105 transition-all text-center"
+                  onClick={onClose}
+                >
+                  Download CV
+                </a>
+              </motion.li>
+            </ul>
+          </nav>
+          
+          <motion.div 
+            className="absolute bottom-10 left-0 right-0 flex justify-center space-x-6"
+            variants={itemVariants}
+          >
+            <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-primary transition-colors">
+              <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+              </svg>
             </a>
-          </li>
-          <li>
-            <a 
-              href="#experience" 
-              className="text-xl font-medium hover:text-primary transition-colors"
-              onClick={onClose}
-            >
-              Experience
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-primary transition-colors">
+              <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                <rect x="2" y="9" width="4" height="12"></rect>
+                <circle cx="4" cy="4" r="2"></circle>
+              </svg>
             </a>
-          </li>
-          <li>
-            <a 
-              href="#projects" 
-              className="text-xl font-medium hover:text-primary transition-colors"
-              onClick={onClose}
-            >
-              Projects
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-primary transition-colors">
+              <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+              </svg>
             </a>
-          </li>
-          <li>
-            <a 
-              href="#skills" 
-              className="text-xl font-medium hover:text-primary transition-colors"
-              onClick={onClose}
-            >
-              Skills
-            </a>
-          </li>
-          <li>
-            <a 
-              href="#blog" 
-              className="text-xl font-medium hover:text-primary transition-colors"
-              onClick={onClose}
-            >
-              Blog
-            </a>
-          </li>
-          <li>
-            <a 
-              href="#contact" 
-              className="text-xl font-medium hover:text-primary transition-colors"
-              onClick={onClose}
-            >
-              Contact
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
