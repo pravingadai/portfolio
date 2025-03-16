@@ -11,6 +11,37 @@
     @apply font-sans antialiased bg-background text-foreground transition-colors duration-300;
     cursor: none; /* Hide default cursor for custom cursor */
   }
+  
+  /* Force text color consistency across themes */
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-foreground font-bold;
+  }
+  
+  p, li, span {
+    @apply text-foreground;
+  }
+  
+  a {
+    @apply text-foreground no-underline;
+  }
+  
+  /* Design system color variables for easy access */
+  :root {
+    --primary-rgb: 99, 35, 201;
+    --primary-light: rgba(var(--primary-rgb), 0.1);
+    --primary-medium: rgba(var(--primary-rgb), 0.5);
+    --primary-dark: rgba(var(--primary-rgb), 0.8);
+  }
+  
+  .dark .text-muted-foreground,
+  .dark .text-secondary {
+    @apply text-gray-300;
+  }
+  
+  .light .text-muted-foreground,
+  .light .text-secondary {
+    @apply text-gray-600;
+  }
 }
 
 @layer components {
@@ -181,8 +212,16 @@
 
   /* Glass morphism for cards and menus */
   .glass {
-    @apply backdrop-blur-md backdrop-saturate-150 bg-white/10 dark:bg-black/20 
-           border border-white/20 dark:border-white/10;
+    @apply backdrop-blur-md backdrop-saturate-150 
+           border;
+  }
+  
+  .dark .glass {
+    @apply bg-black/20 border-white/10 text-white;
+  }
+  
+  .light .glass {
+    @apply bg-white/20 border-black/10 text-black;
   }
 
   /* Dark mode styles */

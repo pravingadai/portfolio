@@ -48,11 +48,11 @@ export default function Header() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between py-4">
           {/* Logo */}
-          <Link href={ROUTES.HOME} className="flex items-center space-x-2">
-            <div className="h-10 w-10 rounded-lg bg-primary flex items-center justify-center">
+          <Link href={ROUTES.HOME} className="flex items-center space-x-2 group">
+            <div className="h-10 w-10 rounded-lg bg-primary flex items-center justify-center transition-all group-hover:scale-110">
               <span className="text-white font-poppins font-bold text-lg">PG</span>
             </div>
-            <span className="font-poppins font-bold text-xl">Pravin Gadai</span>
+            <span className="font-poppins font-bold text-xl text-foreground">Pravin Gadai</span>
           </Link>
           
           {/* Desktop Navigation */}

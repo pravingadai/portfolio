@@ -16,7 +16,7 @@ export default function ThemeToggle() {
 
   return (
     <motion.button
-      className="relative w-10 h-10 overflow-hidden flex items-center justify-center rounded-full bg-background border border-border focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+      className="relative w-10 h-10 overflow-hidden flex items-center justify-center rounded-full bg-background border border-border focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 shadow-sm dark:shadow-primary/20"
       onClick={toggleTheme}
       whileTap={{ scale: 0.9 }}
       whileHover={{ scale: 1.05 }}
@@ -43,7 +43,7 @@ export default function ThemeToggle() {
         }}
         transition={{ duration: 0.2, ease: "easeInOut" }}
       >
-        <Sun className="w-5 h-5 text-amber-500" />
+        <Sun className="w-5 h-5 text-yellow-500" />
       </motion.div>
       
       {/* Subtle glow effect */}

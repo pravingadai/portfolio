@@ -54,7 +54,7 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
     <AnimatePresence>
       {isOpen && (
         <motion.div 
-          className="fixed inset-0 z-50 bg-background/90 dark:bg-gray-900/90 backdrop-blur-xl flex flex-col justify-center items-center"
+          className="fixed inset-0 z-50 bg-background/90 backdrop-blur-xl flex flex-col justify-center items-center"
           initial="closed"
           animate="open"
           exit="closed"
