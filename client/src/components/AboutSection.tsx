@@ -86,8 +86,8 @@ export default function AboutSection() {
                   viewport={{ once: true, amount: 0.8 }}
                   transition={{ duration: 0.5 }}
                 >
-                  <h3 className="font-poppins font-semibold text-lg mb-1">Masters in Computer Application</h3>
-                  <p className="text-gray-600 dark:text-gray-300 mb-2">Dr. Vishwanath Karad MIT World Peace University</p>
+                  <h3 className="font-poppins font-semibold text-lg mb-1 text-foreground">Masters in Computer Application</h3>
+                  <p className="text-foreground/90 dark:text-foreground/90 font-medium mb-2">Dr. Vishwanath Karad MIT World Peace University</p>
                   <p className="text-sm font-mono">2022 - 2024 | CGPA: 7.64</p>
                 </motion.div>
               </div>
@@ -100,8 +100,8 @@ export default function AboutSection() {
                   viewport={{ once: true, amount: 0.8 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
                 >
-                  <h3 className="font-poppins font-semibold text-lg mb-1">Bachelors in Computer Application</h3>
-                  <p className="text-gray-600 dark:text-gray-300 mb-2">Kaveri College of Science and Commerce</p>
+                  <h3 className="font-poppins font-semibold text-lg mb-1 text-foreground">Bachelors in Computer Application</h3>
+                  <p className="text-foreground/90 dark:text-foreground/90 font-medium mb-2">Kaveri College of Science and Commerce</p>
                   <p className="text-sm font-mono">2019 - 2022 | CGPA: 8.77</p>
                 </motion.div>
               </div>
@@ -119,8 +119,8 @@ export default function AboutSection() {
                   >
                     <i className="fas fa-certificate text-primary mt-1 mr-3"></i>
                     <div>
-                      <p className="font-medium">AWS Solutions Architect (Associate)</p>
-                      <p className="text-sm text-gray-600 dark:text-gray-300">Ethans Technologies | 2021</p>
+                      <p className="font-medium text-foreground">AWS Solutions Architect (Associate)</p>
+                      <p className="text-sm text-foreground/80 dark:text-foreground/80">Ethans Technologies | 2021</p>
                     </div>
                   </motion.div>
                   <motion.div 
@@ -132,8 +132,8 @@ export default function AboutSection() {
                   >
                     <i className="fas fa-certificate text-primary mt-1 mr-3"></i>
                     <div>
-                      <p className="font-medium">Java, Springboot, and Hibernate</p>
-                      <p className="text-sm text-gray-600 dark:text-gray-300">Seven Mentors | 2023</p>
+                      <p className="font-medium text-foreground">Java, Springboot, and Hibernate</p>
+                      <p className="text-sm text-foreground/80 dark:text-foreground/80">Seven Mentors | 2023</p>
                     </div>
                   </motion.div>
                   <motion.div 
