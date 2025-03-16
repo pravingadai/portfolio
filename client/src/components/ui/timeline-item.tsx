@@ -19,11 +19,11 @@ const TimelineItem = ({
 }: TimelineItemProps) => {
   return (
     <div className={`timeline-item ${isLast ? "" : "mb-10"}`}>
-      <Card3D className="p-6 bg-dark-card rounded-xl shadow-neo">
+      <Card3D className="p-6 bg-card dark:bg-card/80 rounded-xl shadow-neo">
         <div className="flex justify-between items-start flex-wrap">
           <div>
-            <h3 className="text-xl font-bold">{title}</h3>
-            <h4 className="text-accent">{company}</h4>
+            <h3 className="text-xl font-bold text-foreground">{title}</h3>
+            <h4 className="font-medium text-primary dark:text-primary-foreground">{company}</h4>
           </div>
           <span className="bg-primary/20 text-primary px-3 py-1 rounded-full text-sm">
             {period}
@@ -34,14 +34,14 @@ const TimelineItem = ({
           {responsibilities.map((responsibility, index) => (
             <li key={index} className="flex gap-2">
               <i className="fas fa-angle-right text-primary mt-1"></i>
-              <span>{responsibility}</span>
+              <span className="text-foreground/80">{responsibility}</span>
             </li>
           ))}
         </ul>
         
         <div className="mt-4 flex flex-wrap gap-2">
           {skills.map((skill, index) => (
-            <span key={index} className="bg-dark bg-opacity-30 px-2 py-1 rounded text-xs">
+            <span key={index} className="bg-primary/10 dark:bg-primary/30 text-primary dark:text-primary-foreground px-2 py-1 rounded text-xs">
               {skill}
             </span>
           ))}
