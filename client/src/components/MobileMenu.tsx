@@ -1,8 +1,7 @@
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
-import { NAV_LINKS } from "@/lib/constants";
-import { RESUME_PDF_URL } from "@/lib/constants";
+import { X, Download } from "lucide-react";
+import { NAV_LINKS, ROUTES } from "@/lib/constants";
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -88,11 +87,14 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
               
               <motion.li variants={itemVariants}>
                 <a
-                  href={RESUME_PDF_URL}
+                  href="/pravingadaicv.pdf"
                   className="mt-8 block w-full py-3 px-6 bg-primary hover:bg-primary/90 text-white rounded-lg font-medium transform hover:scale-105 transition-all text-center"
                   onClick={onClose}
                 >
-                  Download CV
+                  <span className="flex items-center justify-center">
+                    <Download className="mr-2 h-4 w-4" />
+                    Download CV
+                  </span>
                 </a>
               </motion.li>
             </ul>

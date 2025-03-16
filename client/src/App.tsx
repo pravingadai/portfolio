@@ -7,7 +7,8 @@ import Home from "@/pages/Home";
 import Blog from "@/pages/Blog";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { StoreProvider } from "@/lib/store";
-import { useEffect } from "react";
+import MobileMenu from "@/components/MobileMenu";
+import { useEffect, useState } from "react";
 
 // Custom cursor tracker
 function CursorTracker() {
@@ -21,10 +22,36 @@ function CursorTracker() {
       cursor.style.top = `${e.clientY}px`;
     };
     
+    const handleMouseDown = () => {
+      cursor.classList.add('cursor-clicked');
+      setTimeout(() => cursor.classList.remove('cursor-clicked'), 300);
+    };
+    
     window.addEventListener('mousemove', updateCursor);
+    window.addEventListener('mousedown', handleMouseDown);
+    
+    // Add hover effect for clickable elements
+    const addHoverClass = () => {
+      const clickableElements = document.querySelectorAll('a, button, input, textarea, [role="button"]');
+      clickableElements.forEach(element => {
+        element.addEventListener('mouseenter', () => {
+          cursor.classList.add('cursor-hover');
+        });
+        element.addEventListener('mouseleave', () => {
+          cursor.classList.remove('cursor-hover');
+        });
+      });
+    };
+    
+    // Run initially and also whenever DOM changes
+    addHoverClass();
+    const observer = new MutationObserver(addHoverClass);
+    observer.observe(document.body, { childList: true, subtree: true });
     
     return () => {
       window.removeEventListener('mousemove', updateCursor);
+      window.removeEventListener('mousedown', handleMouseDown);
+      observer.disconnect();
       if (document.body.contains(cursor)) {
         document.body.removeChild(cursor);
       }

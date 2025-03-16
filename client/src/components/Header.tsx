@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { useStore } from "@/lib/store";
-import ThemeSwitcher from "./ThemeSwitcher";
-import { ROUTES, RESUME_PDF_URL } from "@/lib/constants";
+import ThemeToggle from "./ThemeToggle";
+import { ROUTES } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
+import { Download, Menu } from "lucide-react";
 
 const navLinks = [
   { href: ROUTES.ABOUT, label: "About" },
@@ -67,28 +68,30 @@ export default function Header() {
           
           <div className="flex items-center space-x-4">
             {/* Theme Toggle */}
-            <ThemeSwitcher />
+            <ThemeToggle />
             
             {/* Download CV Button */}
-            <a
-              href={RESUME_PDF_URL}
-              className="hidden md:flex items-center space-x-2 bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg transform hover:scale-105 transition-all"
+            <motion.a
+              href="/pravingadaicv.pdf"
+              className="hidden md:flex items-center space-x-2 bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg transition-all"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
               <span>Download CV</span>
-              <i className="fas fa-download"></i>
-            </a>
+              <Download className="h-4 w-4" />
+            </motion.a>
             
             {/* Mobile Menu Toggle */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="p-2 rounded-md md:hidden text-foreground hover:text-primary"
+            <motion.button
+              className="p-2 rounded-md md:hidden text-foreground hover:text-primary focus-ring"
               onClick={toggleMobileMenu}
               aria-expanded={isMobileMenuOpen}
               aria-controls="mobile-menu"
+              whileTap={{ scale: 0.9 }}
+              whileHover={{ scale: 1.1 }}
             >
-              <i className={`fas ${isMobileMenuOpen ? "fa-times" : "fa-bars"} text-xl`}></i>
-            </Button>
+              <Menu className="h-6 w-6" />
+            </motion.button>
           </div>
         </div>
       </div>
@@ -116,12 +119,12 @@ export default function Header() {
                 </a>
               ))}
               <a
-                href={RESUME_PDF_URL}
+                href="/pravingadaicv.pdf"
                 className="flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-lg w-full justify-center"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 <span>Download CV</span>
-                <i className="fas fa-download"></i>
+                <Download className="h-4 w-4 ml-2" />
               </a>
             </div>
           </motion.div>

@@ -17,8 +17,8 @@
   /* Custom cursor */
   .custom-cursor {
     position: fixed;
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     background-color: transparent;
     border: 2px solid;
@@ -26,7 +26,7 @@
     transform: translate(-50%, -50%);
     pointer-events: none;
     z-index: 9999;
-    transition: width 0.3s, height 0.3s, border-color 0.3s;
+    transition: all 0.2s ease-out;
     mix-blend-mode: difference;
   }
 
@@ -36,18 +36,31 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 5px;
-    height: 5px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     @apply bg-primary;
-    transition: width 0.3s, height 0.3s;
+    transition: all 0.15s ease-out;
   }
-
-  a:hover ~ .custom-cursor,
-  button:hover ~ .custom-cursor {
-    width: 40px;
-    height: 40px;
+  
+  .cursor-hover {
+    width: 40px !important;
+    height: 40px !important;
+    border-width: 1px !important;
     @apply border-primary/50;
+  }
+  
+  .cursor-hover::after {
+    width: 8px !important;
+    height: 8px !important;
+  }
+  
+  .cursor-clicked {
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  
+  .cursor-clicked::after {
+    transform: translate(-50%, -50%) scale(1.5);
   }
 
   /* Custom scrollbar */
