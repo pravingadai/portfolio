@@ -13,6 +13,7 @@ const navLinks = [
   { href: ROUTES.PROJECTS, label: "Projects" },
   { href: ROUTES.SKILLS, label: "Skills" },
   { href: ROUTES.BLOG, label: "Blog" },
+  { href: ROUTES.DASHBOARD, label: "Dashboard" },
   { href: ROUTES.CONTACT, label: "Contact" },
 ];
 

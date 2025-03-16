@@ -17,6 +17,7 @@ export const CONTACT_INFO = {
 export const ROUTES = {
   HOME: "/",
   BLOG: "/blog",
+  DASHBOARD: "/dashboard",
   ABOUT: "#about",
   EXPERIENCE: "#experience",
   PROJECTS: "#projects",

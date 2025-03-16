@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Button } from '@/components/ui/button';
 import { ExternalLink, Home, MessageSquare, Briefcase, PlusCircle, LineChart, Calendar } from 'lucide-react';
-import AIChat from '@/components/AIChat';
+import AIChat from '../components/AIChat';
 
 // Dashboard data
 const skillsData = [
