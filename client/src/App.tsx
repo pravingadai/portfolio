@@ -72,12 +72,15 @@ function Router() {
 }
 
 function App() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
+      <ThemeProvider defaultTheme="dark" storageKey="theme-mode">
         <StoreProvider>
           <CursorTracker />
           <Router />
+          <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
           <Toaster />
         </StoreProvider>
       </ThemeProvider>

@@ -2,61 +2,86 @@ import { createContext, useEffect, useState, ReactNode } from "react";
 
 type Theme = "dark" | "light";
 
+type ThemeProviderProps = {
+  children: ReactNode;
+  defaultTheme?: Theme;
+  storageKey?: string;
+};
+
 type ThemeContextType = {
   theme: Theme;
   toggleTheme: () => void;
   setTheme: (theme: Theme) => void;
 };
 
-export const ThemeContext = createContext<ThemeContextType>({
+const initialContext: ThemeContextType = {
   theme: "dark",
   toggleTheme: () => {},
   setTheme: () => {},
-});
+};
 
-export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const [theme, setTheme] = useState<Theme>("dark");
+export const ThemeContext = createContext<ThemeContextType>(initialContext);
+
+export function ThemeProvider({
+  children,
+  defaultTheme = "dark",
+  storageKey = "theme",
+}: ThemeProviderProps) {
+  const [theme, setTheme] = useState<Theme>(() => {
+    // Check if theme was stored in localStorage first
+    const storedTheme = localStorage.getItem(storageKey) as Theme | null;
+    if (storedTheme) {
+      return storedTheme;
+    }
+    
+    // Check system preference next
+    if (typeof window !== "undefined") {
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      return prefersDark ? "dark" : "light";
+    }
+    
+    // Default to the provided defaultTheme if neither of the above is available
+    return defaultTheme;
+  });
 
   useEffect(() => {
-    // Check system preference first
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    // Apply the theme to the document when the component mounts or theme changes
+    const root = document.documentElement;
     
-    // Then check localStorage, or fall back to system preference
-    const savedTheme = localStorage.getItem("theme") as Theme | null;
-    if (savedTheme) {
-      setTheme(savedTheme);
-    } else {
-      setTheme(prefersDark ? "dark" : "light");
-    }
-  }, []);
+    // Remove previous theme classes
+    root.classList.remove("light", "dark");
+    
+    // Add new theme class
+    root.classList.add(theme);
+    root.style.colorScheme = theme;
+    
+    // Update body classes too for components that rely on it
+    const body = document.body;
+    body.classList.remove("light-theme", "dark-theme");
+    body.classList.add(`${theme}-theme`);
+    
+    // Store the theme preference
+    localStorage.setItem(storageKey, theme);
+  }, [theme, storageKey]);
 
+  // Handle system theme preference changes
   useEffect(() => {
-    // Update document root class when theme changes
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark");
-      document.documentElement.classList.remove("light");
-      document.documentElement.style.colorScheme = "dark";
-    } else {
-      document.documentElement.classList.add("light");
-      document.documentElement.classList.remove("dark");
-      document.documentElement.style.colorScheme = "light";
-    }
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     
-    // Also update body class for components that might rely on it
-    if (theme === "dark") {
-      document.body.classList.add("dark-theme");
-      document.body.classList.remove("light-theme");
-    } else {
-      document.body.classList.add("light-theme");
-      document.body.classList.remove("dark-theme");
-    }
+    // Only update based on system preference if user hasn't explicitly set a theme
+    const handleChange = () => {
+      const storedTheme = localStorage.getItem(storageKey);
+      if (!storedTheme) {
+        setTheme(mediaQuery.matches ? "dark" : "light");
+      }
+    };
     
-    // Save to localStorage
-    localStorage.setItem("theme", theme);
-  }, [theme]);
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, [storageKey]);
 
   const toggleTheme = () => {
-    setTheme(prev => prev === "dark" ? "light" : "dark");
+    setTheme(prevTheme => (prevTheme === "light" ? "dark" : "light"));
   };
 
   return (
@@ -64,4 +89,4 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </ThemeContext.Provider>
   );
-};
+}

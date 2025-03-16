@@ -1,44 +1,61 @@
-import { useTheme } from "@/hooks/use-theme";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Moon, Sun } from "lucide-react";
+import { useStore } from "@/lib/store";
+import { Sun, Moon } from "lucide-react";
 
 export default function ThemeToggle() {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme } = useStore();
+  const [mounted, setMounted] = useState(false);
+
+  // Hydration fix
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
 
   return (
     <motion.button
-      className="relative p-2 rounded-full h-10 w-10 overflow-hidden focus-ring glow"
+      className="relative w-10 h-10 overflow-hidden flex items-center justify-center rounded-full bg-background border border-border focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
       onClick={toggleTheme}
       whileTap={{ scale: 0.9 }}
-      whileHover={{ scale: 1.1 }}
-      aria-label="Toggle theme"
+      whileHover={{ scale: 1.05 }}
+      aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
     >
-      <div className="relative z-10">
-        {theme === "dark" ? (
-          <Sun className="h-[1.2rem] w-[1.2rem] text-yellow-400" />
-        ) : (
-          <Moon className="h-[1.2rem] w-[1.2rem] text-indigo-600" />
-        )}
-      </div>
-      
       <motion.div
-        className="absolute inset-0 bg-gray-700 dark:bg-amber-100 rounded-full"
+        className="absolute inset-0 flex items-center justify-center"
         initial={false}
         animate={{
-          scale: theme === "dark" ? 0 : 1,
-          opacity: theme === "dark" ? 0 : 0.1,
+          y: theme === 'dark' ? 0 : -40,
+          opacity: theme === 'dark' ? 1 : 0,
         }}
-        transition={{ duration: 0.4, type: "spring" }}
-      />
+        transition={{ duration: 0.2, ease: "easeInOut" }}
+      >
+        <Moon className="w-5 h-5 text-primary" />
+      </motion.div>
       
       <motion.div
-        className="absolute inset-0 bg-indigo-100 dark:bg-gray-900 rounded-full"
+        className="absolute inset-0 flex items-center justify-center"
         initial={false}
         animate={{
-          scale: theme === "dark" ? 1 : 0,
-          opacity: theme === "dark" ? 0.1 : 0,
+          y: theme === 'light' ? 0 : 40,
+          opacity: theme === 'light' ? 1 : 0,
         }}
-        transition={{ duration: 0.4, type: "spring" }}
+        transition={{ duration: 0.2, ease: "easeInOut" }}
+      >
+        <Sun className="w-5 h-5 text-amber-500" />
+      </motion.div>
+      
+      {/* Subtle glow effect */}
+      <motion.div 
+        className="absolute inset-0 rounded-full"
+        initial={false}
+        animate={{
+          boxShadow: theme === 'dark' 
+            ? "inset 0 0 10px rgba(124, 58, 237, 0.3)" 
+            : "inset 0 0 10px rgba(245, 158, 11, 0.3)"
+        }}
+        transition={{ duration: 0.3 }}
       />
     </motion.button>
   );
