@@ -1,20 +1,21 @@
 import { useState, useEffect } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { useStore } from "@/lib/store";
 import ThemeToggle from "./ThemeToggle";
 import { ROUTES } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
-import { Download, Menu } from "lucide-react";
+import { Download, Menu, LayoutDashboard } from "lucide-react";
 
+// Navigation links with information about internal/external links
 const navLinks = [
-  { href: ROUTES.ABOUT, label: "About" },
-  { href: ROUTES.EXPERIENCE, label: "Experience" },
-  { href: ROUTES.PROJECTS, label: "Projects" },
-  { href: ROUTES.SKILLS, label: "Skills" },
-  { href: ROUTES.BLOG, label: "Blog" },
-  { href: ROUTES.DASHBOARD, label: "Dashboard" },
-  { href: ROUTES.CONTACT, label: "Contact" },
+  { href: ROUTES.ABOUT, label: "About", isPage: false },
+  { href: ROUTES.EXPERIENCE, label: "Experience", isPage: false },
+  { href: ROUTES.PROJECTS, label: "Projects", isPage: false },
+  { href: ROUTES.SKILLS, label: "Skills", isPage: false },
+  { href: ROUTES.BLOG, label: "Blog", isPage: true },
+  { href: ROUTES.DASHBOARD, label: "Dashboard", isPage: true, icon: <LayoutDashboard className="h-4 w-4" /> },
+  { href: ROUTES.CONTACT, label: "Contact", isPage: false },
 ];
 
 export default function Header() {
@@ -59,13 +60,24 @@ export default function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
             {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="nav-link text-foreground hover:text-primary transition-colors"
-              >
-                {link.label}
-              </a>
+              link.isPage ? (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="nav-link flex items-center gap-1.5 text-foreground hover:text-primary transition-colors"
+                >
+                  {link.icon && link.icon}
+                  {link.label}
+                </Link>
+              ) : (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="nav-link text-foreground hover:text-primary transition-colors"
+                >
+                  {link.label}
+                </a>
+              )
             ))}
           </nav>
           
@@ -112,14 +124,26 @@ export default function Header() {
           >
             <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
               {navLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className="py-2 text-foreground hover:text-primary transition-colors"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {link.label}
-                </a>
+                link.isPage ? (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="py-2 flex items-center gap-2 text-foreground hover:text-primary transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {link.icon && link.icon} 
+                    {link.label}
+                  </Link>
+                ) : (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    className="py-2 text-foreground hover:text-primary transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {link.label}
+                  </a>
+                )
               ))}
               <a
                 href="/pravingadaicv.pdf"

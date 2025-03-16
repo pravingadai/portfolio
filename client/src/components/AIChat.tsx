@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Send, Bot, User } from 'lucide-react';
+import { Send, Bot, User, X, MessageCircle } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // Predefined responses for the chatbot
 const predefinedResponses: Record<string, string[]> = {
@@ -27,8 +28,8 @@ const predefinedResponses: Record<string, string[]> = {
     "Pravin's portfolio showcases projects using various tech stacks, with a focus on user experience and performance optimization."
   ],
   education: [
-    "Pravin holds a Bachelor's degree in Computer Science and has completed several professional certifications in web development and cloud technologies.",
-    "Educationally, Pravin has a Computer Science degree and certifications in AWS, React, and Node.js development.",
+    "Pravin holds a Master's degree in Computer Application and a Bachelor's degree in Computer Application with excellent academic records.",
+    "Educationally, Pravin has studied at Dr. Vishwanath Karad MIT World Peace University for his Masters and at Kaveri College for his Bachelors degree.",
     "Pravin's educational background includes formal computer science education complemented by continuous learning through online platforms and workshops."
   ],
   contact: [
@@ -77,7 +78,8 @@ interface Message {
   timestamp: Date;
 }
 
-export default function AIChat() {
+// Internal chat component used by both the floating and embedded versions
+function ChatInterface({ onClose }: { onClose?: () => void }) {
   const [messages, setMessages] = useState<Message[]>([
     {
       text: "Hello! I'm your AI assistant. How can I help you with information about Pravin's portfolio?",
@@ -134,6 +136,23 @@ export default function AIChat() {
 
   return (
     <div className="flex flex-col h-full">
+      {onClose && (
+        <div className="flex justify-between items-center mb-3 pb-2 border-b border-border">
+          <div className="flex items-center">
+            <Bot size={18} className="text-primary mr-2" />
+            <span className="font-medium text-foreground">AI Assistant</span>
+          </div>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={onClose} 
+            className="h-8 w-8"
+          >
+            <X size={16} />
+          </Button>
+        </div>
+      )}
+      
       <ScrollArea className="flex-1 mb-4 pr-4">
         <div className="space-y-4">
           {messages.map((message, index) => (
@@ -203,4 +222,50 @@ export default function AIChat() {
       </div>
     </div>
   );
+}
+
+// Floating chat button that expands into a chat window
+export function FloatingChat() {
+  const [isOpen, setIsOpen] = useState(false);
+  
+  return (
+    <div className="fixed bottom-6 right-6 z-50">
+      <AnimatePresence>
+        {isOpen ? (
+          <motion.div
+            key="chat-window"
+            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 20 }}
+            className="w-80 sm:w-96 h-[500px] bg-card border border-border rounded-xl shadow-xl p-4 overflow-hidden"
+            style={{ 
+              backdropFilter: "blur(16px)",
+              WebkitBackdropFilter: "blur(16px)"
+            }}
+          >
+            <ChatInterface onClose={() => setIsOpen(false)} />
+          </motion.div>
+        ) : (
+          <motion.button
+            key="chat-button"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setIsOpen(true)}
+            className="bg-primary w-14 h-14 rounded-full flex items-center justify-center shadow-lg relative"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            exit={{ scale: 0 }}
+          >
+            <MessageCircle size={24} className="text-primary-foreground" />
+            <span className="absolute top-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-background"></span>
+          </motion.button>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+// Original AIChat component for embedded use in Dashboard
+export default function AIChat() {
+  return <ChatInterface />;
 }

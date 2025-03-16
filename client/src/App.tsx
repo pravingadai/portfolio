@@ -1,4 +1,4 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -10,6 +10,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { StoreProvider } from "@/lib/store";
 import MobileMenu from "@/components/MobileMenu";
 import { useEffect, useState } from "react";
+import { FloatingChat } from "@/components/AIChat";
 
 // Custom cursor tracker
 function CursorTracker() {
@@ -62,6 +63,18 @@ function CursorTracker() {
   return null;
 }
 
+// ChatHandler decides when to show the floating chat
+function ChatHandler() {
+  const [location] = useLocation();
+  
+  // Don't show floating chat on dashboard since it has its own chat interface
+  if (location === '/dashboard') {
+    return null;
+  }
+  
+  return <FloatingChat />;
+}
+
 function Router() {
   return (
     <Switch>
@@ -82,6 +95,7 @@ function App() {
         <StoreProvider>
           <CursorTracker />
           <Router />
+          <ChatHandler />
           <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
           <Toaster />
         </StoreProvider>
