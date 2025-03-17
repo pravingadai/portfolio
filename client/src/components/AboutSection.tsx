@@ -87,8 +87,8 @@ export default function AboutSection() {
                   transition={{ duration: 0.5 }}
                 >
                   <h3 className="font-poppins font-semibold text-lg mb-1 text-foreground">Masters in Computer Application</h3>
-                  <p className="text-foreground/90 dark:text-foreground/90 font-medium mb-2">Dr. Vishwanath Karad MIT World Peace University</p>
-                  <p className="text-sm font-mono">2022 - 2024 | CGPA: 7.64</p>
+                  <p className="text-foreground font-medium mb-2 text-base">Dr. Vishwanath Karad MIT World Peace University</p>
+                  <p className="text-sm font-mono text-foreground/90">2022 - 2024 | CGPA: 7.64</p>
                 </motion.div>
               </div>
               
@@ -101,8 +101,8 @@ export default function AboutSection() {
                   transition={{ duration: 0.5, delay: 0.2 }}
                 >
                   <h3 className="font-poppins font-semibold text-lg mb-1 text-foreground">Bachelors in Computer Application</h3>
-                  <p className="text-foreground/90 dark:text-foreground/90 font-medium mb-2">Kaveri College of Science and Commerce</p>
-                  <p className="text-sm font-mono">2019 - 2022 | CGPA: 8.77</p>
+                  <p className="text-foreground font-medium mb-2 text-base">Kaveri College of Science and Commerce</p>
+                  <p className="text-sm font-mono text-foreground/90">2019 - 2022 | CGPA: 8.77</p>
                 </motion.div>
               </div>
               
