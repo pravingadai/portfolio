@@ -1,162 +1,92 @@
-import { useState, useEffect } from "react";
-import { Link, useLocation } from "wouter";
-import { motion, AnimatePresence } from "framer-motion";
-import { useStore } from "@/lib/store";
+import { useState } from "react";
+import { Link } from "wouter";
+import { motion } from "framer-motion";
 import ThemeToggle from "./ThemeToggle";
-import { ROUTES } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
-import { Download, Menu, LayoutDashboard } from "lucide-react";
+import { Download, Menu } from "lucide-react";
+import { ROUTES } from "@/lib/constants";
 
-// Navigation links with information about internal/external links
 const navLinks = [
-  { href: ROUTES.ABOUT, label: "About", isPage: false },
-  { href: ROUTES.EXPERIENCE, label: "Experience", isPage: false },
-  { href: ROUTES.PROJECTS, label: "Projects", isPage: false },
-  { href: ROUTES.SKILLS, label: "Skills", isPage: false },
-  { href: ROUTES.BLOG, label: "Blog", isPage: true },
-  { href: ROUTES.DASHBOARD, label: "Dashboard", isPage: true, icon: <LayoutDashboard className="h-4 w-4" /> },
-  { href: ROUTES.CONTACT, label: "Contact", isPage: false },
+  { href: ROUTES.ABOUT, label: "About" },
+  { href: ROUTES.EXPERIENCE, label: "Experience" },
+  { href: ROUTES.PROJECTS, label: "Projects" },
+  { href: ROUTES.SKILLS, label: "Skills" },
+  { href: ROUTES.BLOG, label: "Blog" },
+  { href: ROUTES.CONTACT, label: "Contact" }
 ];
 
 export default function Header() {
-  const { isMobileMenuOpen, setIsMobileMenuOpen } = useStore();
-  const [isScrolled, setIsScrolled] = useState(false);
-  
-  // Handle scroll effect for header
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-  
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-  
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   return (
-    <motion.header
-      className={`fixed top-0 w-full z-40 transition-all duration-300 ${
-        isScrolled 
-          ? "bg-background/80 dark:bg-background/80 backdrop-blur-xl shadow-lg py-2" 
-          : "bg-transparent py-4"
-      }`}
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.5 }}
-    >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between py-4">
-          {/* Logo */}
-          <Link href={ROUTES.HOME} className="flex items-center space-x-2 group">
-            <div className="h-10 w-10 rounded-lg bg-primary flex items-center justify-center transition-all group-hover:scale-110">
-              <span className="text-white font-poppins font-bold text-lg">PG</span>
-            </div>
-            <span className="font-poppins font-bold text-xl text-foreground">Pravin Gadai</span>
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-b">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between h-16">
+          <Link href="/" className="flex items-center space-x-2">
+            <span className="text-xl font-bold">Pravin Gadai</span>
           </Link>
-          
+
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
             {navLinks.map((link) => (
-              link.isPage ? (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="nav-link flex items-center gap-1.5 text-foreground hover:text-primary transition-colors"
-                >
-                  {link.icon && link.icon}
-                  {link.label}
-                </Link>
-              ) : (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className="nav-link text-foreground hover:text-primary transition-colors"
-                >
-                  {link.label}
-                </a>
-              )
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-foreground hover:text-primary transition-colors"
+              >
+                {link.label}
+              </Link>
             ))}
           </nav>
-          
+
           <div className="flex items-center space-x-4">
-            {/* Theme Toggle */}
             <ThemeToggle />
-            
-            {/* Download CV Button */}
-            <motion.a
-              href="/pravingadaicv.pdf"
-              className="hidden md:flex items-center space-x-2 bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg transition-all"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <span>Download CV</span>
-              <Download className="h-4 w-4" />
-            </motion.a>
-            
-            {/* Mobile Menu Toggle */}
+
+            <Button asChild className="hidden md:flex">
+              <a href="/pravingadaicv.pdf" download>
+                <Download className="mr-2 h-4 w-4" />
+                Download CV
+              </a>
+            </Button>
+
             <motion.button
-              className="p-2 rounded-md md:hidden text-foreground hover:text-primary focus-ring"
-              onClick={toggleMobileMenu}
-              aria-expanded={isMobileMenuOpen}
-              aria-controls="mobile-menu"
-              whileTap={{ scale: 0.9 }}
-              whileHover={{ scale: 1.1 }}
+              className="p-2 md:hidden"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              whileTap={{ scale: 0.95 }}
             >
               <Menu className="h-6 w-6" />
             </motion.button>
           </div>
         </div>
-      </div>
-      
-      {/* Mobile Navigation */}
-      <AnimatePresence>
+
+        {/* Mobile Navigation */}
         {isMobileMenuOpen && (
-          <motion.div
-            id="mobile-menu"
-            className="md:hidden bg-background dark:bg-background"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3 }}
+          <motion.nav
+            className="md:hidden py-4"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
           >
-            <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
+            <div className="flex flex-col space-y-4">
               {navLinks.map((link) => (
-                link.isPage ? (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className="py-2 flex items-center gap-2 text-foreground hover:text-primary transition-colors"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    {link.icon && link.icon} 
-                    {link.label}
-                  </Link>
-                ) : (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    className="py-2 text-foreground hover:text-primary transition-colors"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    {link.label}
-                  </a>
-                )
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="text-foreground hover:text-primary transition-colors"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {link.label}
+                </Link>
               ))}
-              <a
-                href="/pravingadaicv.pdf"
-                className="flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-lg w-full justify-center"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <span>Download CV</span>
-                <Download className="h-4 w-4 ml-2" />
-              </a>
+              <Button asChild className="w-full">
+                <a href="/pravingadaicv.pdf" download>
+                  <Download className="mr-2 h-4 w-4" />
+                  Download CV
+                </a>
+              </Button>
             </div>
-          </motion.div>
+          </motion.nav>
         )}
-      </AnimatePresence>
-    </motion.header>
+      </div>
+    </header>
   );
 }

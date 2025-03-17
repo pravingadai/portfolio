@@ -16,14 +16,13 @@ export const CONTACT_INFO = {
 // Routes
 export const ROUTES = {
   HOME: "/",
-  BLOG: "/blog",
-  DASHBOARD: "/dashboard",
   ABOUT: "#about",
   EXPERIENCE: "#experience",
   PROJECTS: "#projects",
   SKILLS: "#skills",
-  CONTACT: "#contact"
-};
+  BLOG: "/blog",
+  CONTACT: "#contact",
+} as const;
 
 // Resume PDF URL
 export const RESUME_PDF_URL = "/pravingadaicv.pdf";
