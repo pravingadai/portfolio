@@ -10,11 +10,11 @@ type ProjectCategory = "All" | "MERN Stack" | "Java" | "AI/ML";
 
 export default function ProjectsSection() {
   const [activeFilter, setActiveFilter] = useState<ProjectCategory>("All");
-  
+
   const filteredProjects = projects.filter(project => 
     activeFilter === "All" || project.category === activeFilter
   );
-  
+
   return (
     <section id="projects" className="py-20 relative overflow-hidden">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -23,7 +23,7 @@ export default function ProjectsSection() {
           highlight="Projects" 
           description="Here are some of my recent projects that showcase my skills and expertise in different technologies."
         />
-        
+
         {/* Project Filters */}
         <motion.div 
           className="flex flex-wrap justify-center gap-4 mb-12"
@@ -48,7 +48,7 @@ export default function ProjectsSection() {
             </Button>
           ))}
         </motion.div>
-        
+
         {/* Projects Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           <AnimatePresence mode="wait">
@@ -56,19 +56,23 @@ export default function ProjectsSection() {
               <motion.div
                 key={project.id}
                 layout
-                initial={{ opacity: 0, scale: 0.8 }}
+                initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                transition={{ 
+                  type: "spring",
+                  stiffness: 100,
+                  damping: 15,
+                  delay: index * 0.1 
+                }}
                 className="card-3d bg-background dark:bg-background rounded-2xl overflow-hidden shadow-xl transition-colors"
                 style={{
                   transformStyle: "preserve-3d",
                   perspective: "1000px",
                 }}
                 whileHover={{
-                  rotateY: 10,
-                  rotateX: 5,
-                  transition: { duration: 0.5 }
+                  scale: 1.03,
+                  transition: { type: "spring", stiffness: 400, damping: 10 }
                 }}
               >
                 <div className="relative overflow-hidden h-52">
@@ -88,13 +92,13 @@ export default function ProjectsSection() {
                     {project.category}
                   </div>
                 </div>
-                
+
                 <div className="p-6">
                   <h3 className="font-poppins font-semibold text-xl mb-2">{project.title}</h3>
                   <p className="text-gray-600 dark:text-gray-300 mb-4">
                     {project.description}
                   </p>
-                  
+
                   <div className="flex flex-wrap gap-2 mb-6">
                     {project.technologies.map((tech, i) => (
                       <span 
@@ -109,7 +113,7 @@ export default function ProjectsSection() {
                       </span>
                     ))}
                   </div>
-                  
+
                   <div className="flex justify-between">
                     <a 
                       href={project.demoLink} 
@@ -143,7 +147,7 @@ export default function ProjectsSection() {
             ))}
           </AnimatePresence>
         </div>
-        
+
         <div className="text-center mt-12">
           <motion.a
             href="#"

@@ -13,11 +13,17 @@ const AboutSection = () => {
   }, [isInView]);
 
   const fadeInUp = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 30, scale: 0.95 },
     visible: { 
       opacity: 1, 
       y: 0,
-      transition: { duration: 0.6 }
+      scale: 1,
+      transition: { 
+        type: "spring",
+        stiffness: 100,
+        damping: 15,
+        duration: 0.8 
+      }
     }
   };
 
