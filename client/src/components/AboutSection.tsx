@@ -23,14 +23,9 @@ export default function AboutSection() {
             perspective: "1000px",
           }}
           whileHover={{
-            scale: 1.02,
             rotateY: 5,
             rotateX: 2,
-            transition: { 
-              type: "spring",
-              stiffness: 400,
-              damping: 10
-            }
+            transition: { duration: 0.5 }
           }}
         >
           <div className="grid md:grid-cols-2 gap-8 items-center">
