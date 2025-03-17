@@ -86,8 +86,8 @@ const EducationSection = () => {
               <div className="absolute left-[-9px] top-0 w-4 h-4 rounded-full bg-primary group-hover:scale-110 transition-transform duration-300" />
               <div className="bg-card/50 backdrop-blur-sm p-6 rounded-lg border border-border/50 hover:border-primary/30 transition-colors duration-300">
               <div className="absolute left-[-9px] top-0 w-4 h-4 rounded-full bg-primary" />
-              <h3 className="text-xl font-semibold text-primary">{edu.degree}</h3>
-              <p className="text-lg font-medium mt-1">{edu.institution}</p>
+              <h3 className="text-xl font-semibold text-primary mb-2">{edu.degree}</h3>
+              <p className="text-lg font-medium mt-1 text-foreground/90">{edu.institution}</p>
               <p className="text-muted-foreground mt-1">{edu.period}</p>
               <ul className="mt-3 list-disc list-inside">
                 {edu.details.map((detail, idx) => (
