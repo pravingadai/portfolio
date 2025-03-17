@@ -3,6 +3,28 @@ import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 
 const EducationSection = () => {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { x: -50, opacity: 0 },
+    visible: {
+      x: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 12
+      }
+    }
+  };
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, amount: 0.1 });
 
@@ -40,7 +62,8 @@ const EducationSection = () => {
       id="education"
       className="py-20 relative page-section"
     >
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 relative">
+        <div className="absolute left-0 top-0 w-full h-full bg-gradient-to-b from-transparent to-background/50 pointer-events-none"></div>
         <motion.h2
           className="text-3xl font-bold font-poppins mb-16 text-center text-3d"
           initial={{ opacity: 0, y: -20 }}
@@ -55,11 +78,13 @@ const EducationSection = () => {
           {education.map((edu, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="mb-12 relative pl-8 border-l-2 border-primary"
+              variants={itemVariants}
+              initial="hidden"
+              animate={isInView ? "visible" : "hidden"}
+              className="mb-12 relative pl-8 border-l-2 border-primary hover:border-primary/80 transition-colors duration-300 group"
             >
+              <div className="absolute left-[-9px] top-0 w-4 h-4 rounded-full bg-primary group-hover:scale-110 transition-transform duration-300" />
+              <div className="bg-card/50 backdrop-blur-sm p-6 rounded-lg border border-border/50 hover:border-primary/30 transition-colors duration-300">
               <div className="absolute left-[-9px] top-0 w-4 h-4 rounded-full bg-primary" />
               <h3 className="text-xl font-semibold text-primary">{edu.degree}</h3>
               <p className="text-lg font-medium mt-1">{edu.institution}</p>
@@ -77,11 +102,13 @@ const EducationSection = () => {
           {certifications.map((cert, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
-              className="mb-8 relative pl-8 border-l-2 border-primary"
+              variants={itemVariants}
+              initial="hidden"
+              animate={isInView ? "visible" : "hidden"}
+              className="mb-8 relative pl-8 border-l-2 border-primary hover:border-primary/80 transition-colors duration-300 group"
             >
+              <div className="absolute left-[-9px] top-0 w-4 h-4 rounded-full bg-primary group-hover:scale-110 transition-transform duration-300" />
+              <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg border border-border/50 hover:border-primary/30 transition-colors duration-300">
               <div className="absolute left-[-9px] top-0 w-4 h-4 rounded-full bg-primary" />
               <h4 className="text-lg font-semibold text-primary">{cert.title}</h4>
               <p className="text-muted-foreground">{cert.issuer}</p>
