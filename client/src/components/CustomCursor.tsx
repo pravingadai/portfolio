@@ -1,78 +1,74 @@
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+
+import { useEffect, useRef } from 'react';
 
 export default function CustomCursor() {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [isPointer, setIsPointer] = useState(false);
-  const [isClicking, setIsClicking] = useState(false);
+  const cursorRef = useRef<HTMLDivElement>(null);
+  const rafRef = useRef<number>();
   
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setPosition({ x: e.clientX, y: e.clientY });
-      
-      // Check if the cursor is over a clickable element
-      const target = e.target as HTMLElement;
-      const isClickable = 
-        target.tagName === 'BUTTON' || 
-        target.tagName === 'A' || 
-        target.closest('button') || 
-        target.closest('a') ||
-        getComputedStyle(target).cursor === 'pointer';
-      
-      setIsPointer(isClickable);
+    const cursor = cursorRef.current;
+    if (!cursor) return;
+
+    let lastX = 0;
+    let lastY = 0;
+    const THROTTLE_DISTANCE = 2; // Minimum pixel distance to trigger update
+
+    const updateCursorPosition = (x: number, y: number) => {
+      cursor.style.transform = `translate(${x}px, ${y}px)`;
     };
-    
-    const handleMouseDown = () => setIsClicking(true);
-    const handleMouseUp = () => setIsClicking(false);
-    
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mousedown', handleMouseDown);
-    window.addEventListener('mouseup', handleMouseUp);
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const dx = Math.abs(e.clientX - lastX);
+      const dy = Math.abs(e.clientY - lastY);
+      
+      // Only update if mouse moved enough
+      if (dx > THROTTLE_DISTANCE || dy > THROTTLE_DISTANCE) {
+        lastX = e.clientX;
+        lastY = e.clientY;
+        
+        if (rafRef.current) {
+          cancelAnimationFrame(rafRef.current);
+        }
+        
+        rafRef.current = requestAnimationFrame(() => {
+          updateCursorPosition(lastX, lastY);
+          
+          // Check for interactive elements
+          const target = e.target as HTMLElement;
+          const isInteractive = 
+            target.tagName === 'BUTTON' || 
+            target.tagName === 'A' || 
+            target.closest('button') || 
+            target.closest('a') ||
+            getComputedStyle(target).cursor === 'pointer';
+          
+          cursor.style.width = isInteractive ? '40px' : '20px';
+          cursor.style.height = isInteractive ? '40px' : '20px';
+          cursor.style.backgroundColor = isInteractive ? 'rgba(108, 99, 255, 0.2)' : 'rgba(108, 99, 255, 0.3)';
+        });
+      }
+    };
+
+    // Add event listeners
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
     
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mousedown', handleMouseDown);
-      window.removeEventListener('mouseup', handleMouseUp);
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
     };
   }, []);
-  
-  // Hide the custom cursor on mobile devices
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    return () => {
-      window.removeEventListener('resize', checkMobile);
-    };
-  }, []);
-  
-  if (isMobile) return null;
-  
+
   return (
-    <motion.div
-      className="fixed top-0 left-0 pointer-events-none z-[9999] mix-blend-difference"
-      animate={{
-        x: position.x,
-        y: position.y,
-        scale: isClicking ? 0.8 : isPointer ? 1.5 : 1,
-        opacity: 1,
+    <div
+      ref={cursorRef}
+      className="fixed w-5 h-5 rounded-full bg-primary pointer-events-none z-[9999] transition-[width,height,background-color] duration-200"
+      style={{
+        transform: 'translate(-50%, -50%)',
+        willChange: 'transform',
+        backfaceVisibility: 'hidden'
       }}
-      transition={{
-        x: { type: "spring", stiffness: 500, damping: 28 },
-        y: { type: "spring", stiffness: 500, damping: 28 },
-        scale: { type: "spring", stiffness: 500, damping: 20 },
-      }}
-    >
-      <div 
-        className={`w-5 h-5 bg-primary bg-opacity-50 rounded-full -translate-x-1/2 -translate-y-1/2 transition-[width,height,background-color] ${
-          isPointer ? 'w-8 h-8 mix-blend-difference' : ''
-        }`}
-      />
-    </motion.div>
+    />
   );
 }
