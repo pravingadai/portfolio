@@ -83,11 +83,11 @@ const EducationSection = () => {
               className="mb-12 relative pl-8 border-l-2 border-primary hover:border-primary/80 transition-colors duration-300 group"
             >
               <div className="absolute left-[-9px] top-0 w-4 h-4 rounded-full bg-primary group-hover:scale-110 transition-transform duration-300" />
-              <div className="bg-background/90 backdrop-blur-sm p-6 rounded-lg border border-border/50 hover:border-primary/30 transition-colors duration-300">
+              <div className="bg-card/50 backdrop-blur-sm p-6 rounded-lg border border-border/50 hover:border-primary/30 transition-colors duration-300">
               <div className="absolute left-[-9px] top-0 w-4 h-4 rounded-full bg-primary" />
               <h3 className="text-xl font-semibold text-primary">{edu.degree}</h3>
-              <p className="text-lg font-medium mt-1 text-white dark:text-white light:text-black">{edu.institution}</p>
-              <p className="text-white/90 dark:text-white/90 light:text-black/90 mt-1">{edu.period}</p>
+              <p className="text-lg font-medium mt-1 text-foreground">{edu.institution}</p>
+              <p className="text-muted-foreground mt-1">{edu.period}</p>
               <ul className="mt-3 list-disc list-inside">
                 {edu.details.map((detail, idx) => (
                   <li key={idx} className="text-white/90 dark:text-white/90 light:text-black/90">{detail}</li>
