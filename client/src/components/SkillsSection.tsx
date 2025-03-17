@@ -203,13 +203,26 @@ export default function SkillsSection() {
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="flex flex-wrap justify-center gap-6 animate-[pulse_4s_cubic-bezier(0.4,0,0.6,1)_infinite]">
+          <div className="flex flex-wrap justify-center gap-6">
             {iconItems.map((item, index) => (
               <motion.div
                 key={index}
                 className="bg-background dark:bg-background p-4 rounded-full shadow-lg transition-colors"
-                whileHover={{ scale: 1.1, rotate: 5 }}
-                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                initial={{ opacity: 0, scale: 0.5 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ 
+                  duration: 0.5,
+                  delay: index * 0.1,
+                  type: "spring",
+                  stiffness: 260,
+                  damping: 20 
+                }}
+                whileHover={{ 
+                  scale: 1.2,
+                  rotate: 360,
+                  boxShadow: "0 5px 15px rgba(0,0,0,0.2)"
+                }}
               >
                 <i className={`${item.icon} text-3xl ${item.color}`}></i>
               </motion.div>
