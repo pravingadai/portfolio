@@ -1,119 +1,84 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import * as THREE from "three";
 import { useStore } from "@/lib/store";
 
 export default function ThreeBackground() {
-  const containerRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const { theme } = useStore();
-  
-  useEffect(() => {
-    if (!containerRef.current) return;
-    
-    // Scene setup
-    const scene = new THREE.Scene();
-    
-    // Camera setup
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000
-    );
+
+  const scene = useMemo(() => new THREE.Scene(), []);
+  const camera = useMemo(() => {
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.z = 3;
-    
-    // Renderer setup
-    const renderer = new THREE.WebGLRenderer({
-      canvas: containerRef.current,
-      alpha: true,
-      antialias: true,
-    });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    
-    // Create particles
-    const particlesGeometry = new THREE.BufferGeometry();
+    return camera;
+  }, []);
+  const renderer = useMemo(() => new THREE.WebGLRenderer({ antialias: true, alpha: true }), []);
+
+  const particlesGeometry = useMemo(() => {
     const particlesCount = 1000;
-    
     const posArray = new Float32Array(particlesCount * 3);
     for (let i = 0; i < particlesCount * 3; i++) {
       posArray[i] = (Math.random() - 0.5) * 10;
     }
-    
-    particlesGeometry.setAttribute(
-      "position",
-      new THREE.BufferAttribute(posArray, 3)
-    );
-    
-    // Material
-    const particlesMaterial = new THREE.PointsMaterial({
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute("position", new THREE.BufferAttribute(posArray, 3));
+    return geometry;
+  }, []);
+
+  const particlesMaterial = useMemo(() => {
+    const material = new THREE.PointsMaterial({
       size: 0.01,
       transparent: true,
-      color: 0x6C63FF,
       blending: THREE.AdditiveBlending,
     });
-    
-    // Mesh
-    const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+    material.color.set(theme === "dark" ? 0x6C63FF : 0x6C63FF); // Initial color
+    return material;
+  }, [theme]);
+
+  const particlesMesh = useMemo(() => new THREE.Points(particlesGeometry, particlesMaterial), [particlesGeometry, particlesMaterial]);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const container = containerRef.current;
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    container.appendChild(renderer.domElement);
     scene.add(particlesMesh);
-    
-    // Animation loop
+
+    const handleResize = () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    };
+
+    window.addEventListener('resize', handleResize);
+
     let animationFrameId: number;
     const animate = () => {
       particlesMesh.rotation.x += 0.0003;
       particlesMesh.rotation.y += 0.0002;
-      
       renderer.render(scene, camera);
       animationFrameId = window.requestAnimationFrame(animate);
     };
-    
     animate();
-    
-    // Handle window resize
-    const handleResize = () => {
-      // Update camera
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      
-      // Update renderer
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    };
-    
-    window.addEventListener("resize", handleResize);
-    
-    // Cleanup
+
+
     return () => {
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener('resize', handleResize);
       window.cancelAnimationFrame(animationFrameId);
+      container.removeChild(renderer.domElement);
       scene.remove(particlesMesh);
       particlesGeometry.dispose();
       particlesMaterial.dispose();
       renderer.dispose();
     };
-  }, []);
-  
-  // Update particle color based on theme
+  }, [camera, renderer, particlesMesh, scene, particlesGeometry, particlesMaterial]);
+
   useEffect(() => {
-    if (!containerRef.current) return;
-    
-    const canvas = containerRef.current;
-    const renderer = new THREE.WebGLRenderer({ canvas });
-    const scene = renderer.getScene?.();
-    
-    if (scene) {
-      scene.traverse((child) => {
-        if (child instanceof THREE.Points) {
-          const material = child.material as THREE.PointsMaterial;
-          material.color.set(theme === "dark" ? 0x6C63FF : 0x6C63FF);
-          material.needsUpdate = true;
-        }
-      });
-    }
-  }, [theme]);
-  
-  return (
-    <canvas
-      ref={containerRef}
-      className="fixed top-0 left-0 w-full h-full -z-10"
-    />
-  );
+    particlesMaterial.color.set(theme === "dark" ? 0x6C63FF : 0x6C63FF);
+    particlesMaterial.needsUpdate = true;
+  }, [theme, particlesMaterial]);
+
+
+  return <div ref={containerRef} className="fixed inset-0 -z-10" />;
 }
