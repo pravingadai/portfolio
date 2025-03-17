@@ -184,9 +184,34 @@
     opacity: 1;
   }
 
-  /* Fancy card effects */
+  /* Card animations and effects */
   .card-hover {
-    @apply transition-all duration-300 hover:-translate-y-2;
+    @apply transition-all duration-500;
+    transform: perspective(1000px) rotateX(0) rotateY(0);
+    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    will-change: transform;
+  }
+
+  .card-hover:hover {
+    transform: perspective(1000px) rotateX(2deg) rotateY(2deg) translateZ(10px);
+    box-shadow: 
+      0 5px 15px rgba(0, 0, 0, 0.15),
+      0 10px 30px rgba(var(--primary-rgb), 0.15);
+  }
+
+  .card-entrance {
+    animation: cardEntrance 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  @keyframes cardEntrance {
+    from {
+      opacity: 0;
+      transform: translateY(20px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
   }
 
   /* Filter buttons */
