@@ -1,25 +1,22 @@
+
 import { useRef, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
-import Card3D from "../ui/card-3d";
-import SkillBar from "../ui/skill-bar";
+import Card3D from "../ui/Card3D";
+import SkillBar from "../ui/SkillBar";
+
+interface Skill {
+  name: string;
+  percentage: number;
+}
 
 interface SkillCategory {
   title: string;
-  skills: {
-    name: string;
-    percentage: number;
-  }[];
+  skills: Skill[];
 }
 
 const SkillsSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, amount: 0.1 });
-
-  useEffect(() => {
-    if (sectionRef.current && isInView) {
-      sectionRef.current.classList.add("visible");
-    }
-  }, [isInView]);
 
   const skillCategories: SkillCategory[] = [
     {
@@ -58,6 +55,29 @@ const SkillsSection = () => {
     }
   ];
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2
+      }
+    }
+  };
+
+  const cardVariants = {
+    hidden: { y: 50, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 12
+      }
+    }
+  };
+
   return (
     <section
       ref={sectionRef}
@@ -69,37 +89,61 @@ const SkillsSection = () => {
           className="text-3xl font-bold font-poppins mb-16 text-center text-3d"
           initial={{ opacity: 0, y: -20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.7, type: "spring" }}
         >
           Technical <span className="text-primary">Skills</span>
         </motion.h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+        <motion.div 
+          className="grid grid-cols-1 md:grid-cols-2 gap-10"
+          variants={containerVariants}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+        >
           {skillCategories.map((category, categoryIndex) => (
             <motion.div
               key={categoryIndex}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: 0.2 + categoryIndex * 0.1 }}
+              variants={cardVariants}
+              whileHover={{ scale: 1.02 }}
+              transition={{ duration: 0.3 }}
             >
-              <Card3D className="p-6 bg-dark-card rounded-xl shadow-neo">
-                <h3 className="text-xl font-bold mb-6 text-center">{category.title}</h3>
+              <Card3D className="p-6 bg-dark-card rounded-xl shadow-neo hover:shadow-neo-lg transition-all duration-300">
+                <motion.h3 
+                  className="text-xl font-bold mb-6 text-center"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  {category.title}
+                </motion.h3>
                 
                 <div className="space-y-6">
                   {category.skills.map((skill, skillIndex) => (
-                    <div key={skillIndex} className="skill-item">
+                    <motion.div 
+                      key={skillIndex} 
+                      className="skill-item"
+                      initial={{ x: -20, opacity: 0 }}
+                      whileInView={{ x: 0, opacity: 1 }}
+                      transition={{ delay: skillIndex * 0.1 }}
+                    >
                       <div className="flex justify-between mb-1">
                         <span className="font-medium">{skill.name}</span>
-                        <span>{skill.percentage}%</span>
+                        <motion.span
+                          initial={{ opacity: 0 }}
+                          whileInView={{ opacity: 1 }}
+                          transition={{ delay: 0.5 + skillIndex * 0.1 }}
+                        >
+                          {skill.percentage}%
+                        </motion.span>
                       </div>
-                      <SkillBar percentage={skill.percentage} />
-                    </div>
+                      <SkillBar percentage={skill.percentage} delay={skillIndex * 0.1} />
+                    </motion.div>
                   ))}
                 </div>
               </Card3D>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
