@@ -64,7 +64,7 @@ const EducationSection = () => {
       <div className="container mx-auto px-4 relative">
         <div className="absolute left-0 top-0 w-full h-full bg-gradient-to-b from-transparent to-background/50 pointer-events-none"></div>
         <motion.h2
-          className="text-3xl font-bold font-poppins mb-16 text-center text-3d text-foreground" //Added text-foreground
+          className="text-3xl font-bold font-poppins mb-16 text-center text-3d text-foreground"
           initial={{ opacity: 0, y: -20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5 }}
@@ -83,21 +83,21 @@ const EducationSection = () => {
               className="mb-12 relative pl-8 border-l-2 border-primary hover:border-primary/80 transition-colors duration-300 group"
             >
               <div className="absolute left-[-9px] top-0 w-4 h-4 rounded-full bg-primary group-hover:scale-110 transition-transform duration-300" />
-              <div className="bg-card/50 backdrop-blur-sm p-6 rounded-lg border border-border/50 hover:border-primary/30 transition-colors duration-300">
+              <div className="bg-background/90 backdrop-blur-sm p-6 rounded-lg border border-border/50 hover:border-primary/30 transition-colors duration-300">
               <div className="absolute left-[-9px] top-0 w-4 h-4 rounded-full bg-primary" />
               <h3 className="text-xl font-semibold text-primary">{edu.degree}</h3>
-              <p className="text-lg font-medium mt-1 text-foreground">{edu.institution}</p>
-              <p className="text-foreground/80 mt-1">{edu.period}</p>
+              <p className="text-lg font-medium mt-1 text-white dark:text-white light:text-black">{edu.institution}</p>
+              <p className="text-white/90 dark:text-white/90 light:text-black/90 mt-1">{edu.period}</p>
               <ul className="mt-3 list-disc list-inside">
                 {edu.details.map((detail, idx) => (
-                  <li key={idx} className="text-foreground/80">{detail}</li> // Changed text color here
+                  <li key={idx} className="text-white/90 dark:text-white/90 light:text-black/90">{detail}</li>
                 ))}
               </ul>
-            </motion.div>
+            </div>
           ))}
 
           {/* Certifications Timeline */}
-          <h3 className="text-2xl font-semibold mb-6 mt-12 text-foreground">Certifications</h3> {/*Added text-foreground*/}
+          <h3 className="text-2xl font-semibold mb-6 mt-12 text-foreground">Certifications</h3>
           {certifications.map((cert, index) => (
             <motion.div
               key={index}
@@ -110,11 +110,11 @@ const EducationSection = () => {
               <div className="bg-card/50 backdrop-blur-sm p-4 rounded-lg border border-border/50 hover:border-primary/30 transition-colors duration-300">
               <div className="absolute left-[-9px] top-0 w-4 h-4 rounded-full bg-primary" />
               <h4 className="text-lg font-semibold text-primary">{cert.title}</h4>
-              <p className="text-foreground/80">{cert.issuer}</p> {/* Changed text color here */}
-              <p className="text-sm text-foreground/80 mt-1"> {/* Changed text color here */}
+              <p className="text-foreground/80">{cert.issuer}</p>
+              <p className="text-sm text-foreground/80 mt-1">
                 {cert.date} | Credential ID: {cert.credentialId}
               </p>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
