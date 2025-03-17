@@ -186,17 +186,10 @@
 
   /* Card animations and effects */
   .card-hover {
-    @apply transition-all duration-500;
+    @apply transition-transform duration-100;
     transform: perspective(1000px) rotateX(0) rotateY(0);
-    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
     will-change: transform;
-  }
-
-  .card-hover:hover {
-    transform: perspective(1000px) rotateX(2deg) rotateY(2deg) translateZ(10px);
-    box-shadow: 
-      0 5px 15px rgba(0, 0, 0, 0.15),
-      0 10px 30px rgba(var(--primary-rgb), 0.15);
+    backface-visibility: hidden;
   }
 
   .card-entrance {
