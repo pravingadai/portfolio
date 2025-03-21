@@ -1,10 +1,21 @@
 import express, { type Request, Response, NextFunction } from "express";
+import rateLimit from 'express-rate-limit';  // Add this import at the top
+import helmet from "helmet";  // Add this import at the top
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
+app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Add before routes registration
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100 // limit each IP to 100 requests per windowMs
+});
+
+app.use('/api', limiter);  // Apply rate limiting to API routes
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -17,23 +28,19 @@ app.use((req, res, next) => {
     return originalResJson.apply(res, [bodyJson, ...args]);
   };
 
-  let logTimeout: NodeJS.Timeout;
   res.on("finish", () => {
     const duration = Date.now() - start;
     if (path.startsWith("/api")) {
-      clearTimeout(logTimeout);
-      logTimeout = setTimeout(() => {
-        let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-        if (capturedJsonResponse) {
-          logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
-        }
+      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
+      if (capturedJsonResponse) {
+        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
+      }
 
-        if (logLine.length > 80) {
-          logLine = logLine.slice(0, 79) + "…";
-        }
+      if (logLine.length > 80) {
+        logLine = logLine.slice(0, 79) + "…";
+      }
 
-        log(logLine);
-      }, 100);
+      log(logLine);
     }
   });
 
@@ -63,12 +70,27 @@ app.use((req, res, next) => {
   // ALWAYS serve the app on port 5000
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
-  const port = 5000;
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`serving on port ${port}`);
+  const port = process.env.PORT || 3000;
+  // Change the server.listen call to:
+  app.listen(port, "127.0.0.1", () => {
+    console.log(`Server running at http://127.0.0.1:${port}`);
   });
 })();
+
+app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
+  const status = err.status || err.statusCode || 500;
+  const message = err.message || "Internal Server Error";
+  
+  // Add environment-specific error details
+  const error = {
+    message,
+    ...(app.get("env") === "development" ? { stack: err.stack } : {})
+  };
+
+  // Send response but don't throw
+  res.status(status).json(error);
+  
+  // Log error and continue
+  console.error(err);
+  next();
+});
