@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Card3D } from "@/components/ui/card-3d";
+import Card3D from "@/components/ui/card-3d";
 import { SectionTitle } from "@/components/ui/section-title";
 import { ArrowDownCircle } from "lucide-react";
 

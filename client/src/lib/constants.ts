@@ -1,9 +1,10 @@
 // Social media links
 export const SOCIAL_LINKS = {
-  linkedIn: "https://linkedin.com/in/",
-  github: "https://github.com/",
-  twitter: "https://twitter.com/",
-  medium: "https://medium.com/"
+  LINKEDIN: "https://linkedin.com/in/",
+  GITHUB: "https://github.com/",
+  TWITTER: "https://twitter.com/",
+  MEDIUM: "https://medium.com/",
+  EMAIL: "mailto:pravingadai@hotmail.com"
 };
 
 // Contact info
@@ -63,8 +64,8 @@ export const BLOG_CATEGORIES = {
 };
 
 // Languages for language switcher
-export const LANGUAGES = {
-  en: "English",
-  hi: "हिन्दी",
-  mr: "मराठी"
-};
+export const LANGUAGES = [
+  { code: "en", name: "English" },
+  { code: "hi", name: "हिन्दी" },
+  { code: "mr", name: "मराठी" }
+];

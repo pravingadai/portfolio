@@ -3,13 +3,14 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Points, PointMaterial } from "@react-three/drei";
 import * as random from "maath/random/dist/maath-random.esm";
 import { useStore } from "@/lib/store";
+import * as THREE from "three";
 
 function Particles({ count = 2000 }) {
   const { theme } = useStore();
   const points = useRef<THREE.Points>(null!);
   
   // Generate random sphere points
-  const positions = random.inSphere(new Float32Array(count * 3), { radius: 1.5 });
+  const positions = random.inSphere(new Float32Array(count * 3), 1.5);
   
   useFrame((state, delta) => {
     if (points.current) {

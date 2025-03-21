@@ -94,6 +94,7 @@ const EducationSection = () => {
                 ))}
               </ul>
             </div>
+          </motion.div>
           ))}
 
           {/* Certifications Timeline */}
@@ -115,6 +116,7 @@ const EducationSection = () => {
                 {cert.date} | Credential ID: {cert.credentialId}
               </p>
             </div>
+          </motion.div>
           ))}
         </div>
       </div>

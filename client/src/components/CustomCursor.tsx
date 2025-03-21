@@ -19,7 +19,7 @@ export default function CustomCursor() {
         target.closest('a') ||
         getComputedStyle(target).cursor === 'pointer';
       
-      setIsPointer(isClickable);
+      setIsPointer(!!isClickable);
     };
     
     const handleMouseDown = () => setIsClicking(true);

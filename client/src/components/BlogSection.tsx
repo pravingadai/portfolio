@@ -5,6 +5,7 @@ import { blogs } from "@/data/blogs";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { formatDistanceToNow } from "date-fns";
+import { useRef } from "react";
 
 type BlogCategory = "All" | "Web Development" | "AI/ML" | "Career";
 
