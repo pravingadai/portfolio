@@ -50,8 +50,8 @@ declare module '@react-three/fiber' {
 declare global {
     namespace JSX {
       interface IntrinsicElements {
-        ambientLight: ThreeElements['ambientLight']
-        points: ThreeElements['points']
+        ambientLight: ThreeElements['ambientLight'];
+        points: ThreeElements['points'];
       }
     }
   }

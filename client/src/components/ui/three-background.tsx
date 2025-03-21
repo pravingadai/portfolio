@@ -1,6 +1,5 @@
-import { useEffect, useRef, useMemo } from "react";
+import { useEffect, useRef } from "react";
 import * as THREE from "three";
-// Ensure THREE is properly typed
 
 const ThreeBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -8,19 +7,12 @@ const ThreeBackground = () => {
   useEffect(() => {
     if (!canvasRef.current) return;
 
-    // Setup scene
+    // Scene setup
     const scene = new THREE.Scene();
-    
-    // Setup camera
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000
-    );
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.z = 5;
 
-    // Setup renderer
+    // Renderer setup
     const renderer = new THREE.WebGLRenderer({
       canvas: canvasRef.current,
       alpha: true,
@@ -28,33 +20,25 @@ const ThreeBackground = () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    // Create particles
+    // Particles system
     const particlesGeometry = new THREE.BufferGeometry();
     const count = 1500;
-
     const positions = new Float32Array(count * 3);
-    const colors = new Float32Array(count * 3);
-
+    
     for (let i = 0; i < count * 3; i++) {
       positions[i] = (Math.random() - 0.5) * 10;
-      colors[i] = Math.random();
     }
 
     particlesGeometry.setAttribute(
       "position",
       new THREE.BufferAttribute(positions, 3)
     );
-    particlesGeometry.setAttribute(
-      "color",
-      new THREE.BufferAttribute(colors, 3)
-    );
 
     const particlesMaterial = new THREE.PointsMaterial({
       size: 0.05,
       sizeAttenuation: true,
       transparent: true,
-      alphaTest: 0.5,
-      vertexColors: true,
+      color: 0x6C63FF
     });
 
     const particles = new THREE.Points(particlesGeometry, particlesMaterial);
@@ -63,14 +47,12 @@ const ThreeBackground = () => {
     // Animation loop
     const animate = () => {
       requestAnimationFrame(animate);
-
       particles.rotation.x += 0.0003;
       particles.rotation.y += 0.0005;
-
       renderer.render(scene, camera);
     };
 
-    // Handle resize
+    // Resize handler
     const handleResize = () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
@@ -93,7 +75,7 @@ const ThreeBackground = () => {
     <canvas
       ref={canvasRef}
       className="fixed top-0 left-0 w-full h-full z-[-1] opacity-20 pointer-events-none"
-    ></canvas>
+    />
   );
 };
 
