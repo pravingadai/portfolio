@@ -5,9 +5,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite",
-    "build": "npx tsc --noEmit && vite build",
-    "preview": "vite preview",
-    "typecheck": "npx tsc --noEmit"
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

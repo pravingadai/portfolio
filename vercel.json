@@ -2,70 +2,16 @@
   "version": 2,
   "builds": [
     {
-      "src": "server/index.ts",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": [
-          "server/**/*",
-          "shared/**/*",
-          ".env.production"
-        ],
-        "maxLambdaSize": "15mb",
-        "engines": {
-          "node": "18.x"
-        }
-      }
-    },
-    {
       "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "dist",
-        "installCommand": "npm install --legacy-peer-deps --prefer-offline",
-        "buildCommand": "npm run build",
-        "outputDirectory": "dist",
-        "assetInclude": [
-          "**/*.wasm",
-          "**/*.css",
-          "**/*.woff2"
-        ]
+        "distDir": "dist/public",
+        "buildCommand": "npm run build"
       }
     }
   ],
-  "routes": [
-    { "src": "/api/(.*)", "dest": "server/index.ts" },
-    { "src": "/(.*)", "dest": "/index.html" }
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
   ],
-  "regions": ["iad1"],
-  "public": false,
-  "cleanUrls": true,
-  "trailingSlash": false,
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "Referrer-Policy",
-          "value": "strict-origin-when-cross-origin"
-        },
-        {
-          "key": "Permissions-Policy",
-          "value": "geolocation=(), microphone=()"
-        },
-        {
-          "key": "Strict-Transport-Security",
-          "value": "max-age=63072000; includeSubDomains; preload"
-        }
-      ]
-    },
-    {
-      "source": "/(.*\\.webmanifest)",
-      "headers": [
-        {
-          "key": "Content-Type",
-          "value": "application/manifest+json"
-        }
-      ]
-    }
-  ]
+  "regions": ["iad1"]
 }
