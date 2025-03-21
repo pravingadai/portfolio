@@ -9,6 +9,4 @@ declare module 'maath/random/dist/maath-random.esm' {
   export function onRect(buffer: Float32Array, width: number, height: number): Float32Array;
   export function inTorus(buffer: Float32Array, radius: number, tubularRadius: number): Float32Array;
   export function onTorus(buffer: Float32Array, radius: number, tubularRadius: number): Float32Array;
-  export function inLine(buffer: Float32Array, length: number): Float32Array;
-  export function onLine(buffer: Float32Array, length: number): Float32Array;
 }

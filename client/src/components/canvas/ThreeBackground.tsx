@@ -41,7 +41,8 @@ export default function ThreeBackground() {
   }), []);
 
   const particlesMesh = useMemo(
-    () => new THREE.Points(particlesGeometry, particlesMaterial),
+    // Find the line with THREE.Points and replace it with:
+    () => new (THREE as any).Points(particlesGeometry, particlesMaterial),
     [particlesGeometry, particlesMaterial]
   );
 

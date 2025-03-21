@@ -23,7 +23,7 @@ declare module '@react-three/fiber' {
     events: { connected: boolean };
   }
 
-  export type FrameCallback<T = any> = (state: RootState, delta: number, frame?: T) => void;
+  export type FrameCallback = (state: RootState, delta: number) => void;
 
   export interface CanvasProps {
     children: ReactNode;
@@ -47,7 +47,7 @@ declare module '@react-three/fiber' {
   }
 
   export function Canvas(props: CanvasProps): JSX.Element;
-  export function useFrame(callback: FrameCallback, renderPriority?: number): void;
+  export function useFrame(callback: FrameCallback, renderPriority?: number): () => void;
 }
 
 declare global {
