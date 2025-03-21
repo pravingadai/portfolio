@@ -2,11 +2,11 @@ import { useEffect } from "react";
 import Layout from "@/components/layout/Layout";
 import HeroSection from "@/components/home/HeroSection";
 import AboutSection from "@/components/home/AboutSection";
-import ExperienceSection from "@/components/home/ExperienceSection";
 import ProjectsSection from "@/components/home/ProjectsSection";
 import SkillsSection from "@/components/home/SkillsSection";
 import BlogSection from "@/components/home/BlogSection";
 import ContactSection from "@/components/home/ContactSection";
+import ExperienceSection from "@/components/home/ExperienceSection";
 
 const Home = () => {
   // Add smooth scrolling behavior
