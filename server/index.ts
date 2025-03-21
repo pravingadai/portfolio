@@ -1,96 +1,100 @@
 import express, { type Request, Response, NextFunction } from "express";
-import rateLimit from 'express-rate-limit';  // Add this import at the top
-import helmet from "helmet";  // Add this import at the top
+import rateLimit from 'express-rate-limit';
+import helmet from "helmet";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
-app.use(helmet());
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 
-// Add before routes registration
-const limiter = rateLimit({
+// Security middleware
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:", "https://*"],
+    }
+  }
+}));
+
+// Rate limiting configuration
+const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limit each IP to 100 requests per windowMs
+  max: 100,
+  message: 'Too many requests from this IP, please try again after 15 minutes',
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
-app.use('/api', limiter);  // Apply rate limiting to API routes
+// Apply middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use('/api', apiLimiter);
 
-app.use((req, res, next) => {
+// Request logging middleware
+app.use((req: Request, res: Response, next: NextFunction) => {
   const start = Date.now();
-  const path = req.path;
-  let capturedJsonResponse: Record<string, any> | undefined = undefined;
+  const { method, path } = req;
+  let responseBody: unknown;
 
-  const originalResJson = res.json;
-  res.json = function (bodyJson, ...args) {
-    capturedJsonResponse = bodyJson;
-    return originalResJson.apply(res, [bodyJson, ...args]);
+  const originalJson = res.json;
+  res.json = function(body) {
+    responseBody = body;
+    return originalJson.call(this, body);
   };
 
-  res.on("finish", () => {
+  res.on('finish', () => {
     const duration = Date.now() - start;
-    if (path.startsWith("/api")) {
-      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-      if (capturedJsonResponse) {
-        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
-      }
-
-      if (logLine.length > 80) {
-        logLine = logLine.slice(0, 79) + "…";
-      }
-
-      log(logLine);
+    if (path.startsWith('/api')) {
+      const logMessage = `${method} ${path} ${res.statusCode} ${duration}ms`;
+      const responsePreview = responseBody ? JSON.stringify(responseBody).slice(0, 120) : '';
+      log(`${logMessage} - ${responsePreview}`);
     }
   });
 
   next();
 });
 
+// Server initialization
 (async () => {
-  const server = await registerRoutes(app);
+  try {
+    const server = await registerRoutes(app);
 
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
+    // Error handling middleware (should be last)
+    app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+      const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+      const message = process.env.NODE_ENV === 'production' 
+        ? 'Internal Server Error' 
+        : err.message;
 
-    res.status(status).json({ message });
-    throw err;
-  });
+      res.status(statusCode).json({
+        message,
+        ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+      });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
-    await setupVite(app, server);
-  } else {
-    serveStatic(app);
+      console.error(`[${new Date().toISOString()}] ERROR:`, err);
+    });
+
+    // Vite setup
+    if (process.env.NODE_ENV === 'development') {
+      await setupVite(app, server);
+    } else {
+      // Pass the app instance to serveStatic function
+      serveStatic(app);  // The function should apply middleware to the app itself
+    }
+
+    // Server configuration
+    const port = parseInt(process.env.PORT || '3000', 10);
+    const host = process.env.NODE_ENV === 'production' ? '0.0.0.0' : '127.0.0.1';
+
+    app.listen(port, host, () => {
+      console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode`);
+      console.log(`Listening on http://${host}:${port}`);
+    });
+
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
   }
-
-  // ALWAYS serve the app on port 5000
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = process.env.PORT ? parseInt(process.env.PORT) : 3000;
-  // Change the server.listen call to:
-  app.listen(port, "127.0.0.1", () => {
-    console.log(`Server running at http://127.0.0.1:${port}`);
-  });
 })();
-
-app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
-  const status = err.status || err.statusCode || 500;
-  const message = err.message || "Internal Server Error";
-  
-  // Add environment-specific error details
-  const error = {
-    message,
-    ...(app.get("env") === "development" ? { stack: err.stack } : {})
-  };
-
-  // Send response but don't throw
-  res.status(status).json(error);
-  
-  // Log error and continue
-  console.error(err);
-  next();
-});

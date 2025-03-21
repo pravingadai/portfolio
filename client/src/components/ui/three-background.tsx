@@ -41,6 +41,8 @@ const ThreeBackground = () => {
       color: 0x6C63FF
     });
 
+    // Use the THREE.Object3D type cast to avoid TypeScript errors
+    // This is a safe workaround since Points exists at runtime but TypeScript doesn't recognize it
     const particles = new (THREE as any).Points(particlesGeometry, particlesMaterial);
     scene.add(particles);
 

@@ -3,24 +3,94 @@
   "builds": [
     {
       "src": "server/index.ts",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "server/**/*",
+          "shared/**/*",
+          ".env.production"
+        ],
+        "maxLambdaSize": "15mb",
+        "engines": {
+          "node": "18.x"
+        }
+      }
     },
     {
       "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "dist/public",
-        "buildCommand": "npm run build"
+        "distDir": "dist",
+        "installCommand": "npm install --legacy-peer-deps --prefer-offline",
+        "buildCommand": "npm run build",
+        "outputDirectory": "dist",
+        "assetInclude": [
+          "**/*.wasm",
+          "**/*.css",
+          "**/*.woff2"
+        ]
       }
     }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/server/index.ts" },
-    { "src": "/pravingadaicv.pdf", "dest": "/attached_assets/pravingadaicv.pdf" },
-    { "src": "/(.*)", "dest": "/index.html" }
+    {
+      "src": "/api/(?<route>.+)",
+      "dest": "/server/index.ts?path=$route",
+      "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      "headers": {
+        "Access-Control-Allow-Origin": "https://yourdomain.com",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization"
+      }
+    },
+    {
+      "src": "/pravingadaicv.pdf",
+      "dest": "/attached_assets/pravingadaicv.pdf",
+      "headers": {
+        "Content-Type": "application/pdf",
+        "Cache-Control": "public, max-age=31536000, immutable",
+        "X-Content-Type-Options": "nosniff"
+      }
+    },
+    {
+      "src": "/_next/static/(?:[^/]+/pages|chunks|runtime|css|media)/.+",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html",
+      "headers": {
+        "Cache-Control": "public, max-age=3600",
+        "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://*.neon.tech;",
+        "X-Frame-Options": "DENY",
+        "X-XSS-Protection": "1; mode=block"
+      }
+    }
   ],
   "env": {
     "NODE_ENV": "production",
-    "PORT": "3000"
-  }
+    "DATABASE_URL": "@neon_db_url",
+    "SESSION_SECRET": "@session_secret",
+    "ENABLE_ANALYTICS": "1",
+    "NEXT_TELEMETRY_DISABLED": "1"
+  },
+  "regions": ["iad1"],
+  "public": false,
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "headers": {
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Permissions-Policy": "geolocation=(), microphone=()",
+    "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload"
+  },
+  "overrides": [
+    {
+      "path": "*.webmanifest",
+      "headers": {
+        "Content-Type": "application/manifest+json"
+      }
+    }
+  ]
 }

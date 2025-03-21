@@ -1,10 +1,10 @@
-import { ThreeElements } from '@react-three/fiber'
+// client/src/types/react-three-fiber.d.ts
+import { ThreeElements } from '@react-three/fiber';
+import * as THREE from 'three';
+import { ReactNode } from 'react';
 
 declare module '@react-three/fiber' {
-  import { ReactNode } from 'react';
-  import * as THREE from 'three';
-
-  export type RootState = {
+  export interface RootState {
     gl: THREE.WebGLRenderer;
     scene: THREE.Scene;
     camera: THREE.Camera;
@@ -21,13 +21,15 @@ declare module '@react-three/fiber' {
     setDpr: (dpr: number) => void;
     setFrameloop: (frameloop: 'always' | 'demand' | 'never') => void;
     events: { connected: boolean };
-  };
+  }
 
   export type FrameCallback<T = any> = (state: RootState, delta: number, frame?: T) => void;
 
-  export function Canvas(props: {
+  export interface CanvasProps {
     children: ReactNode;
-    camera?: Partial<THREE.PerspectiveCamera> | Partial<THREE.OrthographicCamera> | { position: THREE.Vector3 | [number, number, number] };
+    camera?: Partial<THREE.PerspectiveCamera> | 
+             Partial<THREE.OrthographicCamera> | 
+             { position: THREE.Vector3 | [number, number, number] };
     gl?: Partial<THREE.WebGLRenderer>;
     shadows?: boolean | Partial<THREE.ShadowMapType>;
     raycaster?: Partial<THREE.Raycaster>;
@@ -42,16 +44,17 @@ declare module '@react-three/fiber' {
     style?: React.CSSProperties;
     onCreated?: (state: RootState) => void;
     onPointerMissed?: (event: MouseEvent) => void;
-  }): JSX.Element;
+  }
 
+  export function Canvas(props: CanvasProps): JSX.Element;
   export function useFrame(callback: FrameCallback, renderPriority?: number): void;
 }
 
 declare global {
-    namespace JSX {
-      interface IntrinsicElements {
-        ambientLight: ThreeElements['ambientLight'];
-        points: ThreeElements['points'];
-      }
+  namespace JSX {
+    interface IntrinsicElements {
+      ambientLight: ThreeElements['ambientLight'];
+      points: ThreeElements['points'];
     }
   }
+}
