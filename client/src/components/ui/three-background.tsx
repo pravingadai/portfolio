@@ -41,7 +41,7 @@ const ThreeBackground = () => {
       color: 0x6C63FF
     });
 
-    const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+    const particles = new (THREE as any).Points(particlesGeometry, particlesMaterial);
     scene.add(particles);
 
     // Animation loop

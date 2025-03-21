@@ -41,7 +41,7 @@ export default function ThreeBackground() {
   }), []);
 
   const particlesMesh = useMemo(
-    () => new THREE.Points(particlesGeometry, particlesMaterial),
+    () => new (THREE as any).Points(particlesGeometry, particlesMaterial),
     [particlesGeometry, particlesMaterial]
   );
 
