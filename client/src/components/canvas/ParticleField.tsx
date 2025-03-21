@@ -1,18 +1,18 @@
-import { useRef, useEffect } from "react";
-import { Canvas, useFrame, RootState } from "@react-three/fiber";
+import { useRef } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { Points, PointMaterial } from "@react-three/drei";
 import * as random from "maath/random/dist/maath-random.esm";
 import { useStore } from "@/lib/store";
 import * as THREE from "three";
 
-function Particles({ count = 2000 }) {
+function Particles({ count = 2000 }: { count?: number }) {
   const { theme } = useStore();
   const points = useRef<THREE.Points>(null!);
   
   // Generate random sphere points
   const positions = random.inSphere(new Float32Array(count * 3), 1.5);
   
-  useFrame((state: RootState, delta: number) => {
+  useFrame((state, delta: number) => {
     if (points.current) {
       points.current.rotation.x += delta * 0.01;
       points.current.rotation.y += delta * 0.015;
@@ -23,11 +23,11 @@ function Particles({ count = 2000 }) {
     <Points ref={points} positions={positions} stride={3} frustumCulled={false}>
       <PointMaterial
         transparent
-        color={theme === "dark" ? "#6C63FF" : "#6C63FF"}
+        color="#6C63FF" // Simplified since both themes use same color
         size={0.02}
         sizeAttenuation={true}
         depthWrite={false}
-        blending={2}
+        blending={THREE.AdditiveBlending}
       />
     </Points>
   );
@@ -36,7 +36,6 @@ function Particles({ count = 2000 }) {
 export default function ParticleField() {
   const { isLoading } = useStore();
   
-  // Make sure the particles render only after loading is complete
   if (isLoading) return null;
   
   return (

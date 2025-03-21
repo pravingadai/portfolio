@@ -1,3 +1,5 @@
+import { ThreeElements } from '@react-three/fiber'
+
 declare module '@react-three/fiber' {
   import { ReactNode } from 'react';
   import * as THREE from 'three';
@@ -25,7 +27,7 @@ declare module '@react-three/fiber' {
 
   export function Canvas(props: {
     children: ReactNode;
-    camera?: Partial<THREE.PerspectiveCamera> | Partial<THREE.OrthographicCamera>;
+    camera?: Partial<THREE.PerspectiveCamera> | Partial<THREE.OrthographicCamera> | { position: THREE.Vector3 | [number, number, number] };
     gl?: Partial<THREE.WebGLRenderer>;
     shadows?: boolean | Partial<THREE.ShadowMapType>;
     raycaster?: Partial<THREE.Raycaster>;
@@ -44,3 +46,12 @@ declare module '@react-three/fiber' {
 
   export function useFrame(callback: FrameCallback, renderPriority?: number): void;
 }
+
+declare global {
+    namespace JSX {
+      interface IntrinsicElements {
+        ambientLight: ThreeElements['ambientLight']
+        points: ThreeElements['points']
+      }
+    }
+  }
