@@ -18,9 +18,9 @@ const ExperienceSection = () => {
       company: "NDSoftTech Solutions",
       period: "Aug 2024 - Nov 2024",
       responsibilities: [
-        "Assigned with the real-time project for \"One Union Solutions\" to maintain and add features per their requirements.",
+        'Assigned with the real-time project for "One Union Solutions" to maintain and add features per their requirements.',
         "Developed Estimate EOR and IOR features with business real-time calculations and added filters to sort backend data with optimization in code 40%.",
-        "Initialized the client project \"Inquestia\" using MERN Stack. Developed Google Authentication along with real-time data gathering and storing, reducing development time by up to 20%."
+        'Initialized the client project "Inquestia" using MERN Stack. Developed Google Authentication along with real-time data gathering and storing, reducing development time by up to 20%.'
       ],
       skills: ["React.js", "Node.js", "MongoDB", "Express.js"]
     },
