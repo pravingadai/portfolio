@@ -12,7 +12,7 @@ function Particles({ count = 2000 }) {
   // Generate random sphere points
   const positions = random.inSphere(new Float32Array(count * 3), 1.5);
   
-  useFrame((state, delta) => {
+  useFrame((state: RootState, delta: number) => {
     if (points.current) {
       points.current.rotation.x += delta * 0.01;
       points.current.rotation.y += delta * 0.015;
