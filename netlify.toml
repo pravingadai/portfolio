@@ -10,6 +10,7 @@
 
 [build.environment]
   NODE_ENV = "production"
+  NPM_FLAGS = "--production=false"
 
 [dev]
   command = "npm run dev"
