@@ -1,5 +1,6 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import * as THREE from "three";
+// Ensure THREE is properly typed
 
 const ThreeBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useMemo } from "react";
 import * as THREE from "three";
+// Ensure THREE is properly typed
 import { useStore } from "@/lib/store";
 
 export default function ThreeBackground() {
